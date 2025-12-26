@@ -1,0 +1,8 @@
+{
+  "name": "Copy of 0034 novo teste  versao melhorada 22 12 25 ultimate Vision AI Assistant",
+  "description": "Uma aplicação de IA em tempo real que utiliza a câmera e o microfone do seu dispositivo para analisar o ambiente e resolver problemas complexos através do Gemini Live API.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
