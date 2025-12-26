@@ -442,66 +442,82 @@ const App: React.FC = () => {
     return (
       <div className="h-screen w-screen bg-black flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="h-16 bg-gradient-to-r from-pink-500/20 to-purple-500/20 backdrop-blur-md shrink-0 flex items-center justify-between px-6 border-b border-white/10 z-50">
-          <div className="flex items-center gap-4">
+        <div className="h-14 sm:h-16 bg-gradient-to-r from-pink-500/20 to-purple-500/20 backdrop-blur-md shrink-0 flex items-center justify-between px-3 sm:px-6 border-b border-white/10 z-50">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="flex flex-col">
-              <span className="text-lg font-black text-pink-400" style={{ fontFamily: 'cursive' }}>DR.ia</span>
-              <span className="text-[9px] text-pink-300 truncate max-w-[150px]">{currentModel.name} - {currentModel.personality}</span>
+              <span className="text-base sm:text-lg font-black text-pink-400" style={{ fontFamily: 'cursive' }}>DR.ia</span>
+              <span className="text-[8px] sm:text-[9px] text-pink-300 truncate max-w-[100px] sm:max-w-[150px]">{currentModel.name} - {currentModel.personality}</span>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
-            <div className="bg-pink-500/20 px-4 py-2 rounded-full border border-pink-400">
-              <span className="text-pink-400 font-black text-lg">{formatTime(timeLeft)}</span>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="bg-pink-500/20 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-pink-400">
+              <span className="text-pink-400 font-black text-sm sm:text-lg">{formatTime(timeLeft)}</span>
             </div>
             <button onClick={() => {
               cleanupAll();
               setActiveView('main');
-            }} className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-full text-white text-xs font-black uppercase transition-all shadow-md">
+            }} className="bg-red-500 hover:bg-red-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-white text-[10px] sm:text-xs font-black uppercase transition-all shadow-md">
               ✕ Sair
             </button>
           </div>
         </div>
 
-        {/* Gestures Bar */}
-        <div className="absolute top-20 inset-x-4 z-[100] flex flex-wrap justify-center gap-2 pointer-events-none">
+        {/* Gestures Bar - Hidden on small screens */}
+        <div className="absolute top-16 sm:top-20 inset-x-2 sm:inset-x-4 z-[100] hidden sm:flex flex-wrap justify-center gap-1 sm:gap-2 pointer-events-none">
           {GESTURES_MAP.map(g => (
-            <div key={g.id} className={`px-3 py-2 rounded-2xl border transition-all duration-300 flex items-center gap-2 ${activeGestures.includes(g.id) ? 'bg-pink-600 border-pink-300 scale-110 shadow-[0_0_20px_rgba(236,72,153,0.8)] opacity-100' : 'bg-white/5 border-transparent opacity-20'}`}>
-              <span className="text-lg">{g.icon}</span>
-              <span className="text-[8px] font-black uppercase text-white">{g.label}</span>
+            <div key={g.id} className={`px-2 sm:px-3 py-1 sm:py-2 rounded-xl sm:rounded-2xl border transition-all duration-300 flex items-center gap-1 sm:gap-2 ${activeGestures.includes(g.id) ? 'bg-pink-600 border-pink-300 scale-110 shadow-[0_0_20px_rgba(236,72,153,0.8)] opacity-100' : 'bg-white/5 border-transparent opacity-20'}`}>
+              <span className="text-sm sm:text-lg">{g.icon}</span>
+              <span className="text-[6px] sm:text-[8px] font-black uppercase text-white">{g.label}</span>
             </div>
           ))}
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex gap-2 p-2 pt-20">
+        <div className="flex-1 flex flex-col sm:flex-row gap-2 p-2 pt-4 sm:pt-20">
           {/* Webcam do usuário */}
-          <div className="flex-1 relative bg-slate-900 rounded-[2rem] overflow-hidden border-2 border-white/10">
+          <div className="flex-1 relative bg-slate-900 rounded-2xl sm:rounded-[2rem] overflow-hidden border-2 border-white/10 min-h-[35vh] sm:min-h-0">
             <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-full object-cover scale-x-[-1]" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-            <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
-              <span className="text-[10px] font-black uppercase text-white/80">VOCÊ (webcam)</span>
+            <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 bg-black/60 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full">
+              <span className="text-[8px] sm:text-[10px] font-black uppercase text-white/80">VOCÊ</span>
             </div>
           </div>
 
           {/* Avatar da IA */}
           <div 
-            className="flex-1 relative rounded-[2rem] overflow-hidden border-2 border-pink-500/30"
+            className="flex-1 relative rounded-2xl sm:rounded-[2rem] overflow-hidden border-2 border-pink-500/30 min-h-[35vh] sm:min-h-0"
             style={{ background: `linear-gradient(135deg, ${currentModel.gradientFrom}, ${currentModel.gradientTo})` }}
           >
-            <img src={currentModel.avatar} alt={currentModel.name} className="w-full h-full object-cover object-top" />
+            <img 
+              src={currentModel.avatar} 
+              alt={currentModel.name} 
+              className="w-full h-full object-cover object-top"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                // Fallback para SVG inline se imagem falhar
+                target.style.display = 'none';
+                const parent = target.parentElement;
+                if (parent && !parent.querySelector('.fallback-avatar')) {
+                  const fallbackDiv = document.createElement('div');
+                  fallbackDiv.className = 'fallback-avatar absolute inset-0 flex items-center justify-center';
+                  fallbackDiv.innerHTML = `<div class="text-center"><span class="text-8xl">${currentModel.personalityEmoji}</span><p class="text-white font-black mt-4 text-2xl">${currentModel.name}</p></div>`;
+                  parent.appendChild(fallbackDiv);
+                }
+              }}
+            />
             <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-4 right-4 text-pink-400 text-2xl animate-pulse">💕</div>
-              <div className="absolute top-12 left-4 text-pink-300 text-lg opacity-60">💗</div>
-              <div className="absolute bottom-20 right-8 text-pink-400 text-xl opacity-40">💔</div>
+              <div className="absolute top-4 right-4 text-pink-400 text-xl sm:text-2xl animate-pulse">💕</div>
+              <div className="absolute top-12 left-4 text-pink-300 text-base sm:text-lg opacity-60">💗</div>
+              <div className="absolute bottom-20 right-8 text-pink-400 text-lg sm:text-xl opacity-40">💔</div>
             </div>
-            <div className="absolute bottom-4 left-4 bg-pink-500/80 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-2">
-              <span className="text-lg">{currentModel.personalityEmoji}</span>
-              <span className="text-[10px] font-black uppercase text-white">{currentModel.name}</span>
+            <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 bg-pink-500/80 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full flex items-center gap-1 sm:gap-2">
+              <span className="text-base sm:text-lg">{currentModel.personalityEmoji}</span>
+              <span className="text-[8px] sm:text-[10px] font-black uppercase text-white">{currentModel.name}</span>
             </div>
             {transcription && (
-              <div className="absolute bottom-16 left-4 right-4 bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-lg">
-                <p className="text-[10px] font-bold text-center text-pink-600 leading-tight">"{transcription}"</p>
+              <div className="absolute bottom-12 sm:bottom-16 left-2 sm:left-4 right-2 sm:right-4 bg-white/90 backdrop-blur-sm p-2 sm:p-4 rounded-xl sm:rounded-2xl shadow-lg">
+                <p className="text-[9px] sm:text-[10px] font-bold text-center text-pink-600 leading-tight">"{transcription}"</p>
               </div>
             )}
           </div>
@@ -509,10 +525,10 @@ const App: React.FC = () => {
 
         {/* Loading Overlay */}
         {aiLoading && (
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-xl z-[200] flex flex-col items-center justify-center">
-            <div className="w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mb-4" />
-            <span className="text-[10px] font-black uppercase tracking-widest animate-pulse text-pink-400">
-              {currentModel.name} SE PREPARANDO PARA A BRIGA...
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-xl z-[200] flex flex-col items-center justify-center p-4">
+            <div className="w-10 sm:w-12 h-10 sm:h-12 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mb-4" />
+            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest animate-pulse text-pink-400 text-center">
+              {currentModel.name} SE PREPARANDO...
             </span>
           </div>
         )}
@@ -534,20 +550,27 @@ const App: React.FC = () => {
       />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col pb-16 md:pb-0">
         {/* Header */}
-        <div className="h-16 bg-white/40 backdrop-blur-md shrink-0 flex items-center justify-between px-6 border-b border-pink-200">
-          <div className="flex items-center gap-4">
-            <h2 className="text-xl font-black text-pink-500 uppercase" style={{ fontFamily: 'cursive' }}>
+        <div className="h-14 sm:h-16 bg-white/40 backdrop-blur-md shrink-0 flex items-center justify-between px-4 sm:px-6 border-b border-pink-200">
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Mobile Logo */}
+            <h1 
+              className="md:hidden text-2xl font-black text-pink-500 tracking-tight" 
+              style={{ fontFamily: 'cursive' }}
+            >
+              DR.ia
+            </h1>
+            <h2 className="hidden md:block text-xl font-black text-pink-500 uppercase" style={{ fontFamily: 'cursive' }}>
               {activeTab === 'cards' && 'Modelos de IA'}
               {activeTab === 'create' && 'Configuração'}
               {activeTab === 'call' && 'Chamada'}
             </h2>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-pink-500 text-lg">💎</span>
-            <span className="text-pink-600 font-black">{credits}</span>
-            <span className="text-pink-400 text-xs">créditos</span>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <span className="text-pink-500 text-base sm:text-lg">💎</span>
+            <span className="text-pink-600 font-black text-sm sm:text-base">{credits}</span>
+            <span className="text-pink-400 text-[10px] sm:text-xs hidden sm:inline">créditos</span>
           </div>
         </div>
 
@@ -596,9 +619,9 @@ const App: React.FC = () => {
           {activeTab === 'call' && (
             <div className="h-full flex items-center justify-center">
               <div className="text-center">
-                <span className="text-6xl">📞</span>
-                <h3 className="text-2xl font-black text-pink-500 mt-4">Em Breve!</h3>
-                <p className="text-pink-400 mt-2">Chamadas em tempo real</p>
+                <span className="text-5xl sm:text-6xl">📞</span>
+                <h3 className="text-xl sm:text-2xl font-black text-pink-500 mt-4">Em Breve!</h3>
+                <p className="text-pink-400 mt-2 text-sm sm:text-base">Chamadas em tempo real</p>
               </div>
             </div>
           )}
@@ -606,8 +629,8 @@ const App: React.FC = () => {
 
         {/* Error Toast */}
         {error && (
-          <div className="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-2xl shadow-lg z-[200] flex items-center gap-2">
-            <span className="text-sm font-bold">{error}</span>
+          <div className="fixed bottom-20 md:bottom-4 right-4 left-4 md:left-auto bg-red-500 text-white px-4 sm:px-6 py-3 rounded-2xl shadow-lg z-[200] flex items-center gap-2">
+            <span className="text-xs sm:text-sm font-bold flex-1">{error}</span>
             <button onClick={() => setError(null)} className="text-white/80 hover:text-white">✕</button>
           </div>
         )}

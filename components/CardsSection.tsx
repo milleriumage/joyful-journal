@@ -107,16 +107,16 @@ export const CardsSection: React.FC<CardsSectionProps> = ({
   isLoading 
 }) => {
   return (
-    <div className="h-full overflow-y-auto p-6 pb-20">
+    <div className="h-full overflow-y-auto p-4 sm:p-6 pb-24 sm:pb-20 no-scrollbar">
       {/* Header */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-6 sm:mb-8">
         <h2 
-          className="text-3xl font-black text-pink-500 drop-shadow-md" 
+          className="text-2xl sm:text-3xl font-black text-pink-500 drop-shadow-md" 
           style={{ fontFamily: 'cursive' }}
         >
           Escolha sua Adversária
         </h2>
-        <p className="text-pink-400 text-sm mt-2">
+        <p className="text-pink-400 text-xs sm:text-sm mt-2">
           Cada modelo tem seu estilo único de discussão
         </p>
         <div className="flex justify-center gap-1 mt-3">
@@ -127,7 +127,7 @@ export const CardsSection: React.FC<CardsSectionProps> = ({
       </div>
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
         {AI_MODELS.map((model) => (
           <AICard
             key={model.id}
@@ -140,7 +140,7 @@ export const CardsSection: React.FC<CardsSectionProps> = ({
       </div>
 
       {/* Info Footer */}
-      <div className="text-center mt-8 text-pink-400 text-xs">
+      <div className="text-center mt-6 sm:mt-8 text-pink-400 text-[10px] sm:text-xs">
         <p>💎 Créditos são consumidos ao iniciar a interação</p>
         <p className="mt-1">⏱️ O tempo varia de acordo com cada modelo</p>
       </div>
